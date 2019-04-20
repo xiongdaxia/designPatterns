@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //  最原始的添加图片功能
+      let myImgDom = (function() {
+        let imgDom = document.createElement('img');
+        document.body.appendChild(imgDom);
+        return {
+          setSrc: function(src) {
+            imgDom.src = src;
+          }
+        };
+      })();
+
+      // 不使用代理模式的图片预加载;
+      // let myImgDom = (function() {
+      //   let imgDom = document.createElement('img');
+      //   document.body.appendChild(imgDom);
+      //   let img = new Image();
+      //   img.onload = function() {
+      //     imgDom.src = this.src;
+      //   };
+      //   img.onerror = function() {
+      //     imgDom.src = '../assets/error.png';
+      //   };
+
+      //   return {
+      //     setSrc: function(src) {
+      //       imgDom.src = '../assets/loading.png';
+      //       img.src = src;
+      //     }
+      //   };
+      // })();
+
+      // 使用代理模式的图片预加载
+      let proxyImageDom = (function() {
+        let img = new Image();
+        img.onload = function() {
+          myImgDom.setSrc(this.src);
+        };
+        img.onerror = function() {
+          myImgDom.setSrc('../assets/error.png');
+        };
+        return {
+          setSrc: function(src) {
+            myImgDom.setSrc('../assets/loading.png');
+            img.src = src;
+          }
+        };
+      })();
+      myImgDom.setSrc('http://www.pptbz.com/pptpc/UploadFiles_6909/201203/2012031220134655.jpg');
+      // proxyImageDom.setSrc('http://www.pptbz.com/pptpic/UploadFiles_6909/201203/2012031220134655.jpg');
+    </script>
+  </body>
+</html>
